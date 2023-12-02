@@ -1,0 +1,149 @@
+CREATE TABLE `employee` (
+  `employeeId` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `designation` varchar(50) NOT NULL,
+  `address` varchar(80) DEFAULT NULL,
+  `email` varchar(50) NOT NULL,
+  `phoneNumber` varchar(15) NOT NULL,
+  `age` int DEFAULT NULL,
+  `dateOfBirth` date DEFAULT NULL,
+  `cnic` varchar(15) NOT NULL,
+  `gender` varchar(45) NOT NULL,
+  `dateOfJoining` varchar(45) NOT NULL,
+  `salary` varchar(45) NOT NULL,
+  PRIMARY KEY (`employeeId`),
+  UNIQUE KEY `employeeId_UNIQUE` (`employeeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `order` (
+  `OrderNumber` varchar(50) NOT NULL,
+  `totalAmount` int NOT NULL,
+  `ItemList` varchar(200) NOT NULL,
+  `date` date NOT NULL,
+  `totalItems` int NOT NULL,
+  `orderStatus` int NOT NULL,
+  PRIMARY KEY (`OrderNumber`),
+  UNIQUE KEY `OrderNumber_UNIQUE` (`OrderNumber`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `product` (
+  `productId` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(70) NOT NULL,
+  `price` double NOT NULL,
+  `totalQuantity` int NOT NULL,
+  PRIMARY KEY (`productId`),
+  UNIQUE KEY `productId_UNIQUE` (`productId`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `rawmaterial` (
+  `RawMaterialid` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `price` double NOT NULL,
+  `totalQuantity` int NOT NULL,
+  PRIMARY KEY (`RawMaterialid`),
+  UNIQUE KEY `RawMaterialid_UNIQUE` (`RawMaterialid`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `task` (
+  `taskId` int NOT NULL AUTO_INCREMENT,
+  `taskName` varchar(45) NOT NULL,
+  `description` varchar(200) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `deadline` date NOT NULL,
+  PRIMARY KEY (`taskId`),
+  UNIQUE KEY `taskId_UNIQUE` (`taskId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `user` (
+  `userId` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(80) DEFAULT NULL,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  `designation` varchar(50) NOT NULL,
+  `address` varchar(80) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `phoneNumber` varchar(20) DEFAULT NULL,
+  `age` int DEFAULT NULL,
+  `dateofbirth` date DEFAULT NULL,
+  `cnic` varchar(20) NOT NULL,
+  `gender` varchar(20) NOT NULL,
+  PRIMARY KEY (`userId`),
+  UNIQUE KEY `userId_UNIQUE` (`userId`),
+  UNIQUE KEY `username_UNIQUE` (`username`),
+  UNIQUE KEY `email_UNIQUE` (`email`),
+  UNIQUE KEY `cnic_UNIQUE` (`cnic`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `vendor` (
+  `vendorId` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `rating` int DEFAULT NULL,
+  `phoneNumber` varchar(45) NOT NULL,
+  `email` varchar(45) NOT NULL,
+  PRIMARY KEY (`vendorId`),
+  UNIQUE KEY `vendorId_UNIQUE` (`vendorId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CheckCredentials`(IN p_username VARCHAR(255), IN p_password VARCHAR(255), OUT p_isValid BOOLEAN)
+BEGIN
+    DECLARE userCount INT;
+
+    SELECT COUNT(*) INTO userCount FROM user WHERE username = p_username AND password = p_password;
+
+    IF userCount = 1 THEN
+        SET p_isValid = TRUE;
+    ELSE
+        SET p_isValid = FALSE;
+    END IF;
+END$$
+DELIMITER ;
+
+CALL `sdapro`.`CheckCredentials`(<{IN p_username VARCHAR(255)}>, <{IN p_password VARCHAR(255)}>, <{OUT p_isValid BOOLEAN}>);
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertEmployee`(
+    IN p_employeeId INT,
+    IN p_name VARCHAR(100),
+    IN p_designation VARCHAR(50),
+    IN p_address VARCHAR(255),
+    IN p_email VARCHAR(100),
+    IN p_phoneNumber VARCHAR(15),
+    IN p_age INT,
+    IN p_dateOfBirth DATE,
+    IN p_cnic VARCHAR(15),
+    IN p_gender ENUM('Male', 'Female', 'Other'),
+    IN p_dateOfJoining DATE,
+    IN p_salary INT
+)
+BEGIN
+    INSERT INTO sdapro.employee (employeeId, name,designation,address,email,phoneNumber,age,
+    dateOfBirth,cnic,gender,dateOfJoining,salary) VALUES (p_employeeId,p_name,p_designation,p_address,p_email,
+    p_phoneNumber,p_age,p_dateOfBirth,p_cnic,p_gender,p_dateOfJoining,p_salary);
+END$$
+DELIMITER ;
+CALL `sdapro`.`InsertEmployee`(<{IN p_employeeId INT}>, <{IN p_name VARCHAR(100)}>, <{IN p_designation VARCHAR(50)}>, <{IN p_address VARCHAR(255)}>, <{IN p_email VARCHAR(100)}>, <{IN p_phoneNumber VARCHAR(15)}>, <{IN p_age INT}>, <{IN p_dateOfBirth DATE}>, <{IN p_cnic VARCHAR(15)}>, <{IN p_gender ENUM('Male', 'Female', 'Other')}>, <{IN p_dateOfJoining DATE}>, <{IN p_salary INT}>);
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertMaterial`(
+    IN p_productId INT,
+    IN p_name VARCHAR(255),
+    IN p_price DOUBLE,
+    IN p_totalQuantity INT
+)
+BEGIN
+    INSERT INTO rawmaterial (productId, name, price, totalQuantity)
+    VALUES (p_productId, p_name, p_price, p_totalQuantity);
+END$$
+DELIMITER ;
+CALL `sdapro`.`insertMaterial`(<{IN p_productId INT}>, <{IN p_name VARCHAR(255)}>, <{IN p_price DOUBLE}>, <{IN p_totalQuantity INT}>);
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertProduct`(
+    IN p_productId INT,
+    IN p_name VARCHAR(255),
+    IN p_price DOUBLE,
+    IN p_totalQuantity INT
+)
+BEGIN
+    INSERT INTO product (productId, name, price, totalQuantity)
+    VALUES (p_productId, p_name, p_price, p_totalQuantity);
+END$$
+DELIMITER ;
+CALL `sdapro`.`insertProduct`(<{IN p_productId INT}>, <{IN p_name VARCHAR(255)}>, <{IN p_price DOUBLE}>, <{IN p_totalQuantity INT}>);
+
