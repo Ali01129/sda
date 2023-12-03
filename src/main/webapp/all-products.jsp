@@ -196,7 +196,6 @@
 											<th  >Name</th>
 											<th  >Stock</th>
 											<th >Price</th>
-											<th ></th>
 										</tr>
 										</thead>
 										<tbody>

@@ -32,9 +32,7 @@
 					$(document).ready(function () {
 						$('[data-toggle="tooltip"]').tooltip();
 						var actions = $("table td:last-child").html();
-						// Append table with add row form on add new button click
-
-						// Add row on add button click
+						
 						$(document).on("click", ".add", function () {
 							var empty = false;
 							var input = $(this).parents("tr").find('input[type="text"]');
@@ -55,21 +53,30 @@
 								$(".add-new").removeAttr("disabled");
 							}
 						});
-						// Edit row on edit button click
 						$(document).on("click", ".edit", function () {
-							$(this).parents("tr").find("td:not(:last-child):not(:first-child )").each(function () {
-								$(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
+							var currentRow = $(this).closest("tr");
+							var arr = [];
+							currentRow.find("td:not(:last-child):not(:first-child)").each(function () {
+								var currentText = $(this).text();
+								$(this).html('<input type="text" class="form-control" value="' + currentText + '">');
+								arr.push($(this).find('input[type="text"]').val());
 							});
-							$(this).parents("tr").find(".add, .edit").toggle();
-							$(".add-new").attr("disabled", "disabled");
-						});
-						// Delete row on delete button click
-						//$(document).on("click", ".delete", function(){
-						//$(this).parents("tr").remove();
-						//$(".add-new").removeAttr("disabled")
+							currentRow.find(".add, .edit").toggle();
+							$(".add-new").prop("disabled", true);
+							console.log("Initial Input values:", arr);
 
-						//;
-						//});
+							//when add button is pressed
+							$(".add").on("click", function () {
+								// Array to store input values when "Add" is pressed
+								var inputValues = [];
+								currentRow.find("td:not(:last-child):not(:first-child)").each(function () {
+									// Store the input values in the array
+									inputValues.push($(this).find('input[type="text"]').val());
+								});
+								//printing values
+								console.log("Updated Input values:", inputValues);
+							});
+						});
 					});
 
 				</script>
